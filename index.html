@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malla Club — Curated Experience Blueprint</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts: Cormorant Garamond & Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500;600&family=Assistant:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['Cormorant Garamond', 'serif'],
+                        sans: ['Montserrat', 'sans-serif'],
+                        body: ['Assistant', 'sans-serif'],
+                    },
+                    colors: {
+                        malla: {
+                            sand: '#FBF9F6',
+                            stone: '#EAE6DF',
+                            charcoal: '#2C302E',
+                            sage: '#7E8F82',
+                            terracotta: '#D9A07E',
+                            cream: '#FAF6F0'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Smooth luxury interactive styling */
+        .option-card {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .option-card:hover {
+            border-color: #7E8F82;
+            background-color: #FFF;
+        }
+        .option-card.selected {
+            border-color: #2C302E;
+            background-color: #FFF;
+            box-shadow: inset 0 0 0 1px #2C302E;
+        }
+        .luxury-shadow {
+            box-shadow: 0 30px 60px -15px rgba(44, 48, 46, 0.04);
+        }
+        .step-view {
+            display: none;
+        }
+        .step-view.active {
+            display: block;
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-malla-sand text-malla-charcoal font-sans min-h-screen flex flex-col justify-between py-12 px-4 antialiased">
+
+    <!-- CUSTOM NOTIFICATION TOAST -->
+    <div id="error-toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-malla-charcoal text-white text-xs tracking-widest uppercase py-4 px-6 rounded-sm shadow-xl border border-malla-terracotta/30 opacity-0 pointer-events-none transition-all duration-300 transform translate-y-[-10px]">
+        <div class="flex items-center gap-3">
+            <span class="inline-block w-2 h-2 rounded-full bg-malla-terracotta"></span>
+            <span id="toast-message">Please fill out all required fields</span>
+        </div>
+    </div>
+
+    <!-- MAIN FORM CONTAINER -->
+    <div class="max-w-xl w-full mx-auto bg-white border border-malla-stone rounded-sm p-8 sm:p-12 luxury-shadow self-center">
+
+        <!-- Header & Branding -->
+        <header class="text-center mb-10">
+            <h1 class="font-serif text-3xl font-light tracking-wider text-malla-charcoal">MALLA</h1>
+            <div class="w-8 h-[1px] bg-malla-terracotta mx-auto my-3"></div>
+            <p class="text-xs uppercase tracking-[0.2em] text-malla-sage font-medium">Lefkada Guest Stay Blueprint</p>
+        </header>
+
+        <!-- Dynamic Step Progress Timeline -->
+        <div class="flex justify-between items-center mb-12 relative">
+            <div class="absolute left-0 right-0 top-1/2 h-[1px] bg-malla-stone -translate-y-1/2 z-10"></div>
+            <div class="progress-dot w-8 h-8 rounded-full bg-malla-charcoal text-white font-medium flex items-center justify-center text-xs relative z-20 transition-all duration-300">1</div>
+            <div class="progress-dot w-8 h-8 rounded-full bg-malla-stone text-malla-charcoal font-medium flex items-center justify-center text-xs relative z-20 transition-all duration-300">2</div>
+            <div class="progress-dot w-8 h-8 rounded-full bg-malla-stone text-malla-charcoal font-medium flex items-center justify-center text-xs relative z-20 transition-all duration-300">3</div>
+            <div class="progress-dot w-8 h-8 rounded-full bg-malla-stone text-malla-charcoal font-medium flex items-center justify-center text-xs relative z-20 transition-all duration-300">4</div>
+            <div class="progress-dot w-8 h-8 rounded-full bg-malla-stone text-malla-charcoal font-medium flex items-center justify-center text-xs relative z-20 transition-all duration-300">5</div>
+            <div class="progress-dot w-8 h-8 rounded-full bg-malla-stone text-malla-charcoal font-medium flex items-center justify-center text-xs relative z-20 transition-all duration-300">6</div>
+        </div>
+
+        <!-- FORM ROOT -->
+        <form id="blueprint-form" onsubmit="return false;">
+
+            <!-- STEP 1: IDENTITY & GROUP PROFILE -->
+            <div class="step-view active" id="view-step-1">
+                <h2 class="font-serif text-2xl font-light text-malla-charcoal mb-2 tracking-wide">1. Welcome to Malla</h2>
+                <p class="text-xs text-malla-sage uppercase tracking-wider mb-8">Let us know who is joining us this season</p>
+
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-[11px] uppercase tracking-widest text-malla-charcoal font-semibold mb-2" for="leadName">Lead Guest Name</label>
+                        <input type="text" id="leadName" placeholder="e.g., Sarah Jenkins" required class="w-full bg-malla-sand border border-malla-stone p-4 text-sm text-malla-charcoal rounded-sm focus:outline-none focus:border-malla-sage focus:bg-white transition-all">
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] uppercase tracking-widest text-malla-charcoal font-semibold mb-2" for="contactEmail">Contact Email</label>
+                        <input type="email" id="contactEmail" placeholder="e.g., sarah@email.com" required class="w-full bg-malla-sand border border-malla-stone p-4 text-sm text-malla-charcoal rounded-sm focus:outline-none focus:border-malla-sage focus:bg-white transition-all">
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] uppercase tracking-widest text-malla-charcoal font-semibold mb-3">Group Dynamic Profile</label>
+                        <div class="grid grid-cols-1 gap-3">
+                            <div class="option-card border border-malla-stone p-4 rounded-sm cursor-pointer flex items-center gap-3" onclick="selectOptionCard(this, 'groupType')">
+                                <input type="radio" name="groupType" value="Couples" checked class="accent-malla-sage">
+                                <div>
+                                    <span class="block text-xs font-semibold uppercase tracking-wider">Couples</span>
+                                    <span class="block text-[10px] text-gray-400">Romantic, private, and unhurried pacing.</span>
+                                </div>
+                            </div>
+                            <div class="option-card border border-malla-stone p-4 rounded-sm cursor-pointer flex items-center gap-3" onclick="selectOptionCard(this, 'groupType')">
+                                <input type="radio" name="groupType" value="Families" class="accent-malla-sage">
+                                <div>
+                                    <span class="block text-xs font-semibold uppercase tracking-wider">Families</span>
+                                    <span class="block text-[10px] text-gray-400">Safe, engaging, and multi-generational flow.</span>
+                                </div>
+                            </div>
+                            <div class="option-card border border-malla-stone p-4 rounded-sm cursor-pointer flex items-center gap-3" onclick="selectOptionCard(this, 'groupType')">
+                                <input type="radio" name="groupType" value="Small Groups / Friends" class="accent-malla-sage">
+                                <div>
+                                    <span class="block text-xs font-semibold uppercase tracking-wider">Small Groups</span>
+                                    <span class="block text-[10px] text-gray-400">Shared exploration, culinary, and sunsets.</span>
+                                </div>
+                            </div>
+                            <div class="option-card border border-malla-stone p-4 rounded-sm cursor-pointer flex items-center gap-3" onclick="selectOptionCard(this, 'groupType')">
+                                <input type="radio" name="groupType" value="Active Longevity Seekers" class="accent-malla-sage">
+                                <div>
+                                    <span class="block text-xs font-semibold uppercase tracking-wider">Active Longevity</span>
+                                    <span class="block text-[10px] text-gray-400">Functional fitness and high sensory nature.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: LOGISTICS & CHRONOLOGY -->
+            <div class="step-view" id="view-step-2">
+                <h2 class="font-serif text-2xl font-light text-malla-charcoal mb-2 tracking-wide">2. Dates & Logistics</h2>
+                <p class="text-xs text-malla-sage uppercase tracking-wider mb-8">Specify stay duration, headcount, and mobility</p>
+
+                <div class="space-y-6">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[11px] uppercase tracking-widest text-malla-charcoal font-semibold mb-2" for="arrivalDate">Arrival Date</label>
+                            <input type="date" id="arrivalDate" required class="w-full bg-malla-sand border border-malla-stone p-4 text-sm text-malla-charcoal rounded-sm focus:outline-none focus:border-malla-sage focus:bg-white transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] uppercase tracking-widest text-malla-charcoal font-semibold mb-2" for="stayDuration">Nights of Stay</label>
+                            <input type="number" id="stayDuration" min="1" required placeholder="e.g., 7" class="w-full bg-malla-sand border border-malla-stone p-4 text-sm text-malla-charcoal rounded-sm focus:outline-none focus:border-malla-sage focus:bg-white transition-all">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] uppercase tracking-widest text-malla-charcoal font-semibold mb-2" for="totalHeads">Exact Headcount (Total Guests)</label>
+                        <input type="number" id="totalHeads" min="1" required placeholder="e.g., 4" class="w-full bg-malla-sand border border-malla-stone p-4 text-sm text-malla-charcoal rounded-sm focus:outline-none focus:border-malla-sage focus:bg-white transition-all">
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] uppercase tracking-widest text-malla-charcoal font-semibold mb-3">Island Mobility Framework</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div class="option-card border border-malla-stone p-4 rounded-sm cursor-pointer flex items-center gap-3" onclick="selectOptionCard(this, 'mobility')">
+                                <input type="radio" name="mobility" value="Independent (Rental Car Secured)" checked class="accent-malla-sage">
+                                <div>
+                                    <span class="block text-xs font-semibold uppercase tracking-wider">Independent</span>
+                                    <span class="block text-[10px] text-gray-400">Self-drive rental car.</span>
+                                </div>
+                            </div>
+                            <div class="option-card border border-malla-stone p-4 rounded-sm cursor-pointer flex items-center gap-3" onclick="selectOptionCard(this, 'mobility')">
+                                <input type="radio" name="mobility" value="Require Malla Private Transfers" class="accent-malla-sage">
+                                <div>
+                                    <span class="block text-xs font-semibold uppercase tracking-wider">Transfers Required</span>
+                                    <span class="block text-[10px] text-gray-400">Luxury private transfer.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3: LIFESTYLE & EXPERIENCE PILLARS -->
+            <div class="step-view" id="view-step-3">
+                <h2 class="font-serif text-2xl font-light text-malla-charcoal mb-2 tracking-wide">3. Activity Rhythms</h2>
+                <p class="text-xs text-malla-sage uppercase tracking-wider mb-8">Select domains that draw your interest</p>
+
+                <div class="grid grid-cols-1 gap-3">
+                    <div class="option-card border border-malla-stone p-4 rounded-sm cursor-pointer flex items-center gap-3" onclick="toggleCheckboxCard(this)">
+                        <input type="checkbox" name="pillars" value="Sea Adventures (Yachting, Kayaking, Jet Ski)" class="accent-malla-sage">
+                        <div>
+                            <span class="block text-xs font-semibold uppercase tracking-wider">Sea Adventures</span>
+                            <span class="block text-[10px] text-gray-400">Private yachting, paddleboard, hidden coves.</span>
+                        </div>
+                    </div>
+                    <div class="option-card border border-malla-stone p-4 rounded-sm cursor-pointer flex items-center gap-3" onclick="toggleCheckboxCard(this)">
+                        <input type="checkbox" name="pillars" value="Nature & Earth (Horse Riding, Hiking)" class="accent-malla-sage">
+                        <div>
+                            <span class="block text-xs font-semibold uppercase tracking-wider">Nature Exploration</span>
+                            <span class="block text-[10px] text-gray-400">Sunset horseback riding, hiking trails.</span>
+                        </div>
+                    </div>
+                    <div class="option-card border border-malla-stone p-4 rounded-sm cursor-pointer flex items-center gap-3" onclick="toggleCheckboxCard(this)">
+                        <input type="checkbox" name="pillars" value="Heritage & Dining (Cooking, Olive Mill)" class="accent-malla-sage">
+                        <div>
+                            <span class="block text-xs font-semibold uppercase tracking-wider">Heritage & Taste</span>
+                            <span class="block text-[10px] text-gray-400">Cooking classes, wine, olive oil workshops.</span>
+                        </div>
+                    </div>
+                    <div class="option-card border border-malla-stone p-4 rounded-sm cursor-pointer flex items-center gap-3" onclick="toggleCheckboxCard(this)">
+                        <input type="checkbox" name="pillars" value="Bespoke Day Curation" class="accent-malla-sage">
+                        <div>
+                            <span class="block text-xs font-semibold uppercase tracking-wider">Bespoke Curation</span>
+                            <span class="block text-[10px] text-gray-400">Complete, tailor-made day plans by Malla.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 4: WELLNESS INTEGRATION -->
+            <div class="step-view" id="view-step-4">
+                <h2 class="font-serif text-2xl font-light text-malla-charcoal mb-2 tracking-wide">4. Art of Vitality</h2>
+                <p class="text-xs text-malla-sage uppercase tracking-wider mb-8">Are you interested in wellness activities during your stay?</p>
+
+                <div class="grid grid-cols-1 gap-3">
+                    <div class="option-card border border-malla-stone p-4 rounded-sm cursor-pointer flex items-center gap-3" onclick="selectOptionCard(this, 'wellness')">
+                        <input type="radio" name="wellness" value="Highly Interested / Low Effort (Breathwork, Restoration, Meditation, Gentle Mobility)" checked class="accent-malla-sage">
+                        <div>
+                            <span class="block text-xs font-semibold uppercase tracking-wider">Highly Interested / Low Effort</span>
+                            <span class="block text-[10px] text-gray-400">Restorative breathing, cold plunges, meditation, and passive recovery.</span>
+                        </div>
+                    </div>
+                    <div class="option-card border border-malla-stone p-4 rounded-sm cursor-pointer flex items-center gap-3" onclick="selectOptionCard(this, 'wellness')">
+                        <input type="radio" name="wellness" value="Highly Interested / High Effort (Holiday Fitness, Strength, High Energy)" class="accent-malla-sage">
+                        <div>
+                            <span class="block text-xs font-semibold uppercase tracking-wider">Highly Interested / High Effort</span>
+                            <span class="block text-[10px] text-gray-400">Functional strength training, fitness coaching, and high-intensity work.</span>
+                        </div>
+                    </div>
+                    <div class="option-card border border-malla-stone p-4 rounded-sm cursor-pointer flex items-center gap-3" onclick="selectOptionCard(this, 'wellness')">
+                        <input type="radio" name="wellness" value="Curious / General Balanced Interest" class="accent-malla-sage">
+                        <div>
+                            <span class="block text-xs font-semibold uppercase tracking-wider">Curious / Balanced Interest</span>
+                            <span class="block text-[10px] text-gray-400">Open to exploring a customized mix of mobility and light wellness routines.</span>
+                        </div>
+                    </div>
+                    <div class="option-card border border-malla-stone p-4 rounded-sm cursor-pointer flex items-center gap-3" onclick="selectOptionCard(this, 'wellness')">
+                        <input type="radio" name="wellness" value="Not Interested in Wellness" class="accent-malla-sage">
+                        <div>
+                            <span class="block text-xs font-semibold uppercase tracking-wider">Not Interested</span>
+                            <span class="block text-[10px] text-gray-400">Prefer focusing entirely on island sea, land, and heritage excursions.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 5: PREFERRED LAYER & REMARKS -->
+            <div class="step-view" id="view-step-5">
+                <h2 class="font-serif text-2xl font-light text-malla-charcoal mb-2 tracking-wide">5. Curation Tier</h2>
+                <p class="text-xs text-malla-sage uppercase tracking-wider mb-8">Preferred budget scope and personal bounds</p>
+
+                <div class="space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="option-card border border-malla-stone p-4 rounded-sm cursor-pointer flex items-center gap-3" onclick="selectOptionCard(this, 'budget')">
+                            <input type="radio" name="budget" value="Standard Premium Setup" checked class="accent-malla-sage">
+                            <div>
+                                <span class="block text-xs font-semibold uppercase tracking-wider">Standard Premium</span>
+                                <span class="block text-[10px] text-gray-400">Balanced high-value vendor pairings.</span>
+                            </div>
+                        </div>
+                        <div class="option-card border border-malla-stone p-4 rounded-sm cursor-pointer flex items-center gap-3" onclick="selectOptionCard(this, 'budget')">
+                            <input type="radio" name="budget" value="High Luxury Charter Focus" class="accent-malla-sage">
+                            <div>
+                                <span class="block text-xs font-semibold uppercase tracking-wider">High Luxury</span>
+                                <span class="block text-[10px] text-gray-400">Private yachting, premium transfers.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] uppercase tracking-widest text-malla-charcoal font-semibold mb-2" for="customNotes">Dietary Bounds, Flight info or Restrictions</label>
+                        <textarea id="customNotes" rows="4" placeholder="e.g., Vegetarian menu focus, senior group mobility guidelines, or arrival flight times..." class="w-full bg-malla-sand border border-malla-stone p-4 text-sm text-malla-charcoal rounded-sm focus:outline-none focus:border-malla-sage focus:bg-white transition-all"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 6: AUTOMATIC SECURE DISPATCH LOADER & FALLBACK SCREEN -->
+            <div class="step-view" id="view-step-6">
+                <div class="text-center py-8">
+                    <div id="loader-spinner" class="inline-block w-12 h-12 border-2 border-malla-terracotta border-t-transparent rounded-full animate-spin mb-6"></div>
+
+                    <h2 id="dispatch-headline" class="font-serif text-2xl font-light text-malla-charcoal mb-3 tracking-wide">Blueprint Formulated</h2>
+                    <p id="dispatch-subtext" class="text-sm text-malla-sage uppercase tracking-widest mb-6 font-semibold">Submitting secure blueprint...</p>
+
+                    <div id="fallback-container" class="mt-4">
+                        <div class="border border-malla-stone bg-malla-sand p-6 text-xs text-left font-mono rounded-sm leading-relaxed mb-6 whitespace-pre-wrap text-malla-charcoal" id="brief-copy-space">
+                            Generating your parameters...
+                        </div>
+                        <div class="space-y-3">
+                            <button type="button" onclick="triggerManualDispatch('whatsapp')" class="w-full py-4 bg-[#25D366] text-white text-xs uppercase tracking-widest font-semibold rounded-sm hover:bg-[#20ba59] transition-all flex items-center justify-center gap-2 shadow-sm">
+                                💬 Open via WhatsApp
+                            </button>
+                            <button type="button" onclick="triggerManualDispatch('email')" class="w-full py-4 bg-malla-charcoal text-white text-xs uppercase tracking-widest font-semibold rounded-sm hover:bg-malla-sage transition-all flex items-center justify-center gap-2">
+                                ✉️ Send via Email
+                            </button>
+                            <button type="button" id="copy-btn" onclick="copyBriefText()" class="w-full py-3.5 border border-malla-stone text-malla-charcoal text-xs uppercase tracking-widest font-medium rounded-sm hover:bg-malla-sand transition-all flex items-center justify-center gap-2">
+                                📋 Copy Brief Content
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="brief-output" class="hidden"></div>
+                </div>
+            </div>
+
+            <!-- NAVIGATION BUTTON INTERFACE -->
+            <div class="flex justify-between items-center mt-10 border-t border-malla-stone pt-6" id="navigation-controls">
+                <button type="button" id="back-btn" onclick="navigateForm(-1)" disabled class="border border-malla-stone px-6 py-3.5 text-xs tracking-widest uppercase hover:bg-malla-sand transition-all text-malla-charcoal disabled:opacity-30 disabled:cursor-not-allowed rounded-sm">
+                    Back
+                </button>
+                <button type="button" id="next-btn" onclick="navigateForm(1)" class="bg-malla-charcoal text-white px-6 py-3.5 text-xs tracking-widest uppercase hover:bg-malla-sage transition-all rounded-sm font-semibold">
+                    Next
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- GLOBAL FOOTER -->
+    <footer class="max-w-xl w-full mx-auto text-center mt-10 space-y-2">
+        <p class="text-[10px] text-malla-sage uppercase tracking-widest leading-relaxed">
+            Note: All experiences & wellness services are on-demand and curated specifically for your stay. Due to peak seasonal demand in Lefkada, services are strictly subject to availability.
+        </p>
+        <p class="text-[9px] text-gray-400 uppercase tracking-widest">
+            © 2026 Malla Club Hospitality. All rights reserved.
+        </p>
+    </footer>
+
+    <!-- LOGICAL ENGINE -->
+    <script>
+        const DISPATCH_CONFIG = {
+            googleAppsScriptURL: "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE",
+            emailRecipient: "omnifit.world@gmail.com",
+            whatsappPhone: "306941234567"
+        };
+
+        let activeStep = 0;
+        const steps = document.querySelectorAll(".step-view");
+        const dots = document.querySelectorAll(".progress-dot");
+        const backBtn = document.getElementById("back-btn");
+        const nextBtn = document.getElementById("next-btn");
+
+        function showNotification(message) {
+            const toast = document.getElementById("error-toast");
+            const toastMsg = document.getElementById("toast-message");
+
+            toastMsg.textContent = message;
+            toast.classList.remove("opacity-0", "pointer-events-none", "translate-y-[-10px]");
+            toast.classList.add("opacity-100", "translate-y-0");
+
+            setTimeout(() => {
+                toast.classList.remove("opacity-100", "translate-y-0");
+                toast.classList.add("opacity-0", "pointer-events-none", "translate-y-[-10px]");
+            }, 3000);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.option-card').forEach(card => {
+                const radio = card.querySelector('input[type="radio"]');
+                const checkbox = card.querySelector('input[type="checkbox"]');
+                if ((radio && radio.checked) || (checkbox && checkbox.checked)) {
+                    card.classList.add('selected');
+                }
+            });
+        });
+
+        function selectOptionCard(card, inputName) {
+            const container = card.parentElement;
+            container.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+
+            card.classList.add('selected');
+            const radio = card.querySelector(`input[name="${inputName}"]`);
+            if (radio) radio.checked = true;
+        }
+
+        function toggleCheckboxCard(card) {
+            const checkbox = card.querySelector('input[type="checkbox"]');
+            if (checkbox) {
+                checkbox.checked = !checkbox.checked;
+                if (checkbox.checked) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            }
+        }
+
+        function navigateForm(direction) {
+            if (direction === 1) {
+                if (!validateCurrentStep()) {
+                    showNotification("Please fill in the required fields on this card to progress.");
+                    return;
+                }
+
+                if (activeStep === 4) {
+                    compileStayBrief();
+                }
+            }
+
+            steps[activeStep].classList.remove("active");
+
+            if (dots[activeStep]) {
+                dots[activeStep].className = "progress-dot w-8 h-8 rounded-full bg-malla-stone text-malla-charcoal font-medium flex items-center justify-center text-xs relative z-20 transition-all duration-300";
+            }
+
+            activeStep += direction;
+
+            steps[activeStep].classList.add("active");
+
+            if (dots[activeStep]) {
+                dots[activeStep].className = "progress-dot w-8 h-8 rounded-full bg-malla-charcoal text-white font-medium flex items-center justify-center text-xs relative z-20 transition-all duration-300";
+            }
+
+            backBtn.disabled = (activeStep === 0);
+
+            if (activeStep === 4) {
+                nextBtn.textContent = "Submit Blueprint";
+                nextBtn.classList.remove("bg-malla-charcoal");
+                nextBtn.classList.add("bg-emerald-600", "hover:bg-emerald-700");
+            } else {
+                nextBtn.textContent = "Next";
+                nextBtn.classList.remove("bg-emerald-600", "hover:bg-emerald-700");
+                nextBtn.classList.add("bg-malla-charcoal", "hover:bg-malla-sage");
+            }
+
+            if (activeStep === 5) {
+                document.getElementById("navigation-controls").style.display = "none";
+                executeAutomaticDispatch();
+            } else {
+                document.getElementById("navigation-controls").style.display = "flex";
+            }
+        }
+
+        function validateCurrentStep() {
+            const activeCard = steps[activeStep];
+            const requiredFields = activeCard.querySelectorAll("[required]");
+            for (let el of requiredFields) {
+                if (!el.value) return false;
+            }
+            return true;
+        }
+
+        function compileStayBrief() {
+            const name = document.getElementById("leadName").value || "Not provided";
+            const email = document.getElementById("contactEmail").value || "Not provided";
+            const groupType = document.querySelector('input[name="groupType"]:checked')?.value || "Unclassified";
+            const arrival = document.getElementById("arrivalDate").value || "Not specified";
+            const stay = document.getElementById("stayDuration").value || "?";
+            const headcount = document.getElementById("totalHeads").value || "?";
+            const mobility = document.querySelector('input[name="mobility"]:checked')?.value || "Unspecified";
+            const wellness = document.querySelector('input[name="wellness"]:checked')?.value || "Unspecified";
+            const budget = document.querySelector('input[name="budget"]:checked')?.value || "Unspecified";
+
+            const selectedPillars = [];
+            document.querySelectorAll('input[name="pillars"]:checked').forEach(cb => {
+                selectedPillars.push(cb.value);
+            });
+            const pillarsStr = selectedPillars.length > 0 ? selectedPillars.join(", ") : "None Selected";
+            const customNotes = document.getElementById("customNotes").value || "None provided";
+
+            const briefText = `MALLA EXPERIENCE DESIGN BLUEPRINT — SEASON 2026
+--------------------------------------------------
+Lead Guest Name: ${name}
+Contact Email: ${email}
+Target Arrival: ${arrival} (${stay} Nights)
+Exact Headcount: ${headcount} Guests
+Group Profile: ${groupType}
+Island Mobility Status: ${mobility}
+
+Curated Focus Pillars:
+- Preference Domains: ${pillarsStr}
+- General Wellness Profile: ${wellness}
+- Budget Parameter: ${budget}
+
+Additional Custom Criteria:
+"${customNotes}"
+
+Status Code: Standalone-onboarding-blueprint`;
+
+            document.getElementById("brief-output").textContent = briefText;
+            document.getElementById("brief-copy-space").textContent = briefText;
+        }
+
+        function compileSubmissionPayload() {
+            const brief = document.getElementById("brief-output").textContent;
+            const selectedPillars = [];
+            document.querySelectorAll('input[name="pillars"]:checked').forEach(cb => {
+                selectedPillars.push(cb.value);
+            });
+
+            return {
+                _subject: "Malla Club Onboarding Stay Blueprint — " + (document.getElementById("leadName").value || "New Guest"),
+                lead_guest_name: document.getElementById("leadName").value || "",
+                contact_email: document.getElementById("contactEmail").value || "",
+                arrival_date: document.getElementById("arrivalDate").value || "",
+                stay_duration_nights: document.getElementById("stayDuration").value || "",
+                total_guests: document.getElementById("totalHeads").value || "",
+                group_profile: document.querySelector('input[name="groupType"]:checked')?.value || "",
+                mobility: document.querySelector('input[name="mobility"]:checked')?.value || "",
+                preference_domains: selectedPillars.join(", ") || "None selected",
+                wellness_profile: document.querySelector('input[name="wellness"]:checked')?.value || "",
+                budget_parameter: document.querySelector('input[name="budget"]:checked')?.value || "",
+                custom_notes: document.getElementById("customNotes").value || "",
+                full_blueprint: brief,
+                source_page: window.location.href,
+                submitted_at_browser_time: new Date().toISOString()
+            };
+        }
+
+        async function executeAutomaticDispatch() {
+            const endpoint = DISPATCH_CONFIG.googleAppsScriptURL;
+
+            if (!endpoint || endpoint.includes("PASTE_YOUR_GOOGLE_APPS_SCRIPT")) {
+                console.warn("Google Apps Script endpoint is not configured yet.");
+                showFallbackView("Choose how to send your blueprint below.");
+                return;
+            }
+
+            try {
+                await fetch(endpoint, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8"
+                    },
+                    body: JSON.stringify(compileSubmissionPayload())
+                });
+
+                showSuccessView();
+            } catch (error) {
+                console.error("Automatic email submission failed:", error);
+                showFallbackView("Automatic email failed. Use the backup email or copy option below.");
+                showNotification("Email sending failed. Please use the backup option.");
+            }
+        }
+
+        function showSuccessView() {
+            document.getElementById("loader-spinner").classList.add("hidden");
+            document.getElementById("dispatch-headline").textContent = "Blueprint Sent";
+            document.getElementById("dispatch-subtext").textContent = "Your stay blueprint has been sent to the Malla team.";
+        }
+
+        function showFallbackView(message = "Automatic dispatch window initiated.") {
+            document.getElementById("loader-spinner").classList.add("hidden");
+            document.getElementById("dispatch-headline").textContent = "Blueprint Formulated";
+            document.getElementById("dispatch-subtext").textContent = message;
+        }
+
+        function triggerManualDispatch(channel) {
+            const brief = document.getElementById("brief-output").textContent;
+            if (channel === 'whatsapp') {
+                const encodedText = encodeURIComponent("Hello Malla Club! We have completed our stay blueprint. Here is our guest profile:\n\n" + brief);
+                window.open(`https://wa.me/${DISPATCH_CONFIG.whatsappPhone}?text=${encodedText}`, '_blank');
+            } else if (channel === 'email') {
+                const recipient = DISPATCH_CONFIG.emailRecipient;
+                const subject = encodeURIComponent("Malla Club Onboarding Stay Blueprint — " + (document.getElementById("leadName").value || "New Guest"));
+                const body = encodeURIComponent(brief);
+                window.location.href = `mailto:${recipient}?subject=${subject}&body=${body}`;
+            }
+        }
+
+        function copyBriefText() {
+            const textToCopy = document.getElementById("brief-output").textContent;
+            const copyBtn = document.getElementById("copy-btn");
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    setCopySuccessState(copyBtn);
+                }).catch(err => {
+                    console.error("Failed to copy using modern API: ", err);
+                    executeLegacyCopy(textToCopy, copyBtn);
+                });
+            } else {
+                executeLegacyCopy(textToCopy, copyBtn);
+            }
+        }
+
+        function executeLegacyCopy(text, buttonElement) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    setCopySuccessState(buttonElement);
+                }
+            } catch (err) {
+                console.error('Fallback copy operation failed', err);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function setCopySuccessState(btn) {
+            btn.textContent = "Copied to Clipboard! ✓";
+            btn.classList.remove("border-malla-stone");
+            btn.classList.add("border-emerald-600", "bg-emerald-50", "text-emerald-700");
+
+            setTimeout(() => {
+                btn.textContent = "📋 Copy Brief Content";
+                btn.className = "w-full py-3.5 border border-malla-stone text-malla-charcoal text-xs uppercase tracking-widest font-medium rounded-sm hover:bg-malla-sand transition-all flex items-center justify-center gap-2";
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
